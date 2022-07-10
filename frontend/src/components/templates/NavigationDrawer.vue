@@ -1,38 +1,74 @@
 <template>
   <v-navigation-drawer :value="drawer" app stateless :temporary="width <= 991">
-    <v-container>
+    <template v-slot:prepend>
       <v-list-item>
         <v-list-item-title class="title grey--text text--darken-2">
           Pope
         </v-list-item-title>
+        <v-spacer />
         <template v-if="width <= 991">
           <v-btn @click="switchDrawerAction" icon>
-            <v-icon>{{ mdiChevronLeft }}</v-icon>
+            <v-icon>{{ icon.mdiChevronLeft }}</v-icon>
           </v-btn>
         </template>
       </v-list-item>
-      <v-divider />
+    </template>
+    <v-divider />
+    <v-container>
       <v-list nav dense>
-        <v-list-group
-          v-for="nav_list in nav_lists"
-          :key="nav_list.name"
-          :prepend-icon="nav_list.icon"
-          no-action
-          :append-icon="nav_list.lists ? mdiChevronDown : ''"
-        >
-          <template v-slot:activator>
+        <template v-for="nav_list in nav_lists">
+          <v-list-item
+            v-if="!nav_list.lists"
+            :to="nav_list.link"
+            :key="nav_list.name"
+            @click="menuClose"
+          >
+            <v-list-item-icon>
+              <v-icon>{{ nav_list.icon }}</v-icon>
+            </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>{{ nav_list.name }}</v-list-item-title>
-            </v-list-item-content>
-          </template>
-          <v-list-item v-for="list in nav_list.lists" :key="list">
-            <v-list-item-content>
-              <v-list-item-title>{{ list }}</v-list-item-title>
+              <v-list-item-title>
+                {{ nav_list.name }}
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-        </v-list-group>
+          <v-list-group
+            v-else
+            no-action
+            :prepend-icon="nav_list.icon"
+            :key="nav_list.link"
+            v-model="nav_list.active"
+            :append-icon="nav_list.lists ? icon.mdiChevronDown : ''"
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ nav_list.name }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item
+              v-for="list in nav_list.lists"
+              :key="list.name"
+              :to="list.link"
+            >
+              <v-list-item-title>
+                {{ list.name }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list-group>
+        </template>
       </v-list>
     </v-container>
+    <template v-slot:append>
+      <div>
+        <v-list>
+          <v-list-item>
+            <v-btn block outlined color="red"> Logout </v-btn>
+          </v-list-item>
+        </v-list>
+      </div>
+    </template>
   </v-navigation-drawer>
 </template>
 
@@ -41,11 +77,9 @@ import { mapGetters, mapActions } from "vuex";
 import {
   mdiChevronLeft,
   mdiChevronDown,
-  mdiSpeedometer,
-  mdiCogs,
-  mdiPalette,
+  mdiCog,
+  mdiBriefcaseArrowLeftRight,
   mdiViewDashboard,
-  mdiFunction,
 } from "@mdi/js";
 
 export default {
@@ -53,31 +87,44 @@ export default {
   data() {
     return {
       width: window.innerWidth,
-      mdiChevronLeft,
-      mdiChevronDown,
+      icon: {
+        mdiChevronLeft,
+        mdiChevronDown,
+      },
       nav_lists: [
         {
-          name: "Getting Started",
-          icon: mdiSpeedometer,
-          lists: ["Quick Start", "Pre-made layouts"],
-        },
-        {
-          name: "Customization",
-          icon: mdiCogs,
-        },
-        {
-          name: "Styles & animations",
-          icon: mdiPalette,
-          lists: ["Colors", "Content", "Display"],
-        },
-        {
-          name: "UI Components",
+          name: "Dashboard",
           icon: mdiViewDashboard,
-          lists: ["API explorer", "Alerts"],
+          link: "/dashboard",
         },
         {
-          name: "Directives",
-          icon: mdiFunction,
+          name: "My exchanges",
+          icon: mdiBriefcaseArrowLeftRight,
+          link: "/exchanges",
+        },
+        {
+          name: "My Settings",
+          icon: mdiCog,
+          active: false,
+          link: "",
+          lists: [
+            {
+              name: "Subscription",
+              link: "/settings",
+            },
+            {
+              name: "Security",
+              link: "/settings",
+            },
+            {
+              name: "Languages",
+              link: "/settings",
+            },
+            {
+              name: "Support",
+              link: "/support",
+            },
+          ],
         },
       ],
     };
@@ -88,8 +135,11 @@ export default {
   },
   methods: {
     ...mapActions("navigation", ["switchDrawerAction"]),
-    handleResize: function () {
+    handleResize() {
       this.width = window.innerWidth;
+    },
+    menuClose() {
+      this.nav_lists.forEach((nav_list) => (nav_list.active = false));
     },
   },
   mounted: function () {

@@ -14,60 +14,53 @@
       </v-list-item>
     </template>
     <v-divider />
-    <v-container>
-      <v-list nav dense>
-        <template v-for="nav_list in nav_lists">
-          <v-list-item
-            v-if="!nav_list.lists"
-            :to="nav_list.link"
-            :key="nav_list.name"
-            @click="menuClose"
-          >
-            <v-list-item-icon>
-              <v-icon>{{ nav_list.icon }}</v-icon>
-            </v-list-item-icon>
+    <v-list nav dense>
+      <template v-for="nav_list in nav_lists">
+        <v-list-item
+          v-if="!nav_list.lists"
+          :to="nav_list.link"
+          :key="nav_list.name"
+          @click="menuClose"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ nav_list.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ nav_list.name }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-group
+          v-else
+          no-action
+          :prepend-icon="nav_list.icon"
+          :key="nav_list.link"
+          v-model="nav_list.active"
+          :append-icon="nav_list.lists ? icon.mdiChevronDown : ''"
+        >
+          <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>
                 {{ nav_list.name }}
               </v-list-item-title>
             </v-list-item-content>
-          </v-list-item>
-          <v-list-group
-            v-else
-            no-action
-            :prepend-icon="nav_list.icon"
-            :key="nav_list.link"
-            v-model="nav_list.active"
-            :append-icon="nav_list.lists ? icon.mdiChevronDown : ''"
+          </template>
+          <v-list-item
+            v-for="list in nav_list.lists"
+            :key="list.name"
+            :to="list.link"
           >
-            <template v-slot:activator>
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ nav_list.name }}
-                </v-list-item-title>
-              </v-list-item-content>
-            </template>
-            <v-list-item
-              v-for="list in nav_list.lists"
-              :key="list.name"
-              :to="list.link"
-            >
-              <v-list-item-title>
-                {{ list.name }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list-group>
-        </template>
-      </v-list>
-    </v-container>
-    <template v-slot:append>
-      <div>
-        <v-list>
-          <v-list-item>
-            <v-btn block outlined color="red"> Logout </v-btn>
+            <v-list-item-title>
+              {{ list.name }}
+            </v-list-item-title>
           </v-list-item>
-        </v-list>
-      </div>
+        </v-list-group>
+      </template>
+    </v-list>
+    <template v-slot:append>
+      <v-divider />
+      <NavigationFooter :lists="nav_footer_lists" />
     </template>
   </v-navigation-drawer>
 </template>
@@ -80,10 +73,13 @@ import {
   mdiCog,
   mdiBriefcaseArrowLeftRight,
   mdiViewDashboard,
+  mdiHelp,
 } from "@mdi/js";
+import { NavigationFooter } from "../uiParts/Navigation";
 
 export default {
   name: "NavigationDrawer",
+  components: { NavigationFooter },
   data() {
     return {
       width: window.innerWidth,
@@ -110,21 +106,24 @@ export default {
           lists: [
             {
               name: "Subscription",
-              link: "/settings",
+              link: "/users/subscription",
             },
             {
               name: "Security",
-              link: "/settings",
-            },
-            {
-              name: "Languages",
-              link: "/settings",
+              link: "/users/profile",
             },
             {
               name: "Support",
               link: "/support",
             },
           ],
+        },
+      ],
+      nav_footer_lists: [
+        {
+          name: "Help",
+          icon: mdiHelp,
+          link: "/help",
         },
       ],
     };

@@ -20,3 +20,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#app {
+  --background-color: #f5f5f5;
+  background-color: var(--background-color);
+}
+</style>

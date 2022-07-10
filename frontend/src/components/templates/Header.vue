@@ -1,36 +1,14 @@
 <template>
-  <v-app-bar color="primary" dark app>
+  <v-app-bar color="white" elevation="0" app>
     <v-app-bar-nav-icon @click="switchDrawerAction">
-      <v-icon>{{ mdiMenu }}</v-icon>
+      <v-icon>{{ icon.mdiMenu }}</v-icon>
     </v-app-bar-nav-icon>
-    <v-toolbar-title> App </v-toolbar-title>
     <v-spacer />
     <v-toolbar-items>
-      <v-btn text to="/about">For About</v-btn>
-      <v-menu offset-y>
-        <template v-slot:activator="{ on }">
-          <v-btn v-on="on" text>
-            Support
-            <v-icon>
-              {{ mdiMenuDown }}
-            </v-icon>
-          </v-btn>
-        </template>
-        <v-list>
-          <v-list-item
-            v-for="support in supports"
-            :key="support.name"
-            :to="support.link"
-          >
-            <v-list-item-icon>
-              <v-icon>{{ support.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>{{ support.name }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <AvatarDropdown
+        :mdiAccountCircle="icon.mdiAccountCircle"
+        :items="avatarDropdownItems"
+      />
     </v-toolbar-items>
   </v-app-bar>
 </template>
@@ -39,33 +17,51 @@
 import { mapActions } from "vuex";
 import {
   mdiMenu,
-  mdiMenuDown,
-  mdiHelpCircleOutline,
-  mdiBugOutline,
+  mdiAccountCircle,
+  mdiBriefcaseArrowLeftRight,
+  mdiNoteText,
+  mdiWallet,
+  mdiCog,
   mdiChatQuestionOutline,
 } from "@mdi/js";
+import AvatarDropdown from "../uiParts/Header/AvatarDropdown";
 
 export default {
   name: "Header",
+  components: {
+    AvatarDropdown,
+  },
   data() {
     return {
-      mdiMenu,
-      mdiMenuDown,
-      supports: [
+      icon: {
+        mdiMenu,
+        mdiAccountCircle,
+      },
+      avatarDropdownItems: [
         {
-          name: "Suppourt",
-          icon: mdiHelpCircleOutline,
-          link: "/suppourt",
+          name: "My exchanges",
+          icon: mdiBriefcaseArrowLeftRight,
+          link: "/exchanges",
         },
         {
-          name: "Report a bug",
-          icon: mdiBugOutline,
-          link: "/bug",
+          name: "My portfolios",
+          icon: mdiNoteText,
+          link: "/portfolios",
         },
         {
-          name: "Contact",
+          name: "Subscription",
+          icon: mdiWallet,
+          link: "/subscription",
+        },
+        {
+          name: "Settings",
+          icon: mdiCog,
+          link: "/settings",
+        },
+        {
+          name: "Feedback",
           icon: mdiChatQuestionOutline,
-          link: "/contact",
+          link: "/feedback",
         },
       ],
     };

@@ -3,7 +3,7 @@
     <v-container>
       <v-list-item>
         <v-list-item-title class="title grey--text text--darken-2">
-          Application
+          Pope
         </v-list-item-title>
         <template v-if="width <= 991">
           <v-btn @click="switchDrawerAction" icon>
@@ -33,11 +33,6 @@
         </v-list-group>
       </v-list>
     </v-container>
-    <template v-slot:append>
-      <div>
-        <v-btn block>Logout</v-btn>
-      </div>
-    </template>
   </v-navigation-drawer>
 </template>
 

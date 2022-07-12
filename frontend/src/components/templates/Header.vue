@@ -56,7 +56,7 @@ export default {
         {
           name: "Settings",
           icon: mdiCog,
-          link: "/settings",
+          link: "/users/profile",
         },
         {
           name: "Feedback",

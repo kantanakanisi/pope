@@ -1,12 +1,17 @@
 <template>
-  <v-navigation-drawer :value="drawer" app stateless :temporary="width <= 991">
+  <v-navigation-drawer
+    :value="drawer"
+    app
+    stateless
+    :temporary="windowWidth <= 960"
+  >
     <template v-slot:prepend>
       <v-list-item>
         <v-list-item-title class="title grey--text text--darken-2">
           Pope
         </v-list-item-title>
         <v-spacer />
-        <template v-if="width <= 991">
+        <template v-if="windowWidth <= 960">
           <v-btn @click="switchDrawerAction" icon>
             <v-icon>{{ icon.mdiChevronLeft }}</v-icon>
           </v-btn>
@@ -75,6 +80,7 @@ import {
   mdiViewDashboard,
   mdiHelp,
 } from "@mdi/js";
+import { BREAKPOINT } from "../../styles";
 import { NavigationFooter } from "../uiParts/Navigation";
 
 export default {
@@ -82,11 +88,11 @@ export default {
   components: { NavigationFooter },
   data() {
     return {
-      width: window.innerWidth,
       icon: {
         mdiChevronLeft,
         mdiChevronDown,
       },
+      BREAKPOINT,
       nav_lists: [
         {
           name: "Dashboard",
@@ -129,23 +135,21 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("styles_utils", ["windowWidth"]),
     ...mapGetters("navigation", ["drawer"]),
-    ...mapGetters("device", ["windowWidth"]),
   },
   methods: {
+    ...mapActions("styles_utils", ["handleResizeAction"]),
     ...mapActions("navigation", ["switchDrawerAction"]),
-    handleResize() {
-      this.width = window.innerWidth;
-    },
     menuClose() {
       this.nav_lists.forEach((nav_list) => (nav_list.active = false));
     },
   },
   mounted: function () {
-    window.addEventListener("resize", this.handleResize);
+    window.addEventListener("resize", this.handleResizeAction);
   },
   beforeDestroy: function () {
-    window.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("resize", this.handleResizeAction);
   },
 };
 </script>

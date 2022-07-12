@@ -5,7 +5,7 @@ type DrawerType = {
 const is_sp = window.innerWidth <= 767;
 
 const state = {
-  drawer: is_sp ? false : true,
+  drawer: is_sp ? false : false,
 };
 
 const getters = {
